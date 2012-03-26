@@ -15,7 +15,8 @@
 #include <stdlib.h>
 
 #define  BUFFER_SIZE  100
-#define  WORD_SIZE    100
+#define  WORD_LENGH    50
+#define  ALL_WORD_SIZE 10000
 
 struct id_attribute
 {
@@ -28,8 +29,8 @@ static char Buffer[BUFFER_SIZE];
 static unsigned  int  state=0;
 static unsigned  int  lexeme_pointer=0;
 static unsigned  int  word_pointer=0;
-static char str_buffer[WORD_SIZE];
-static token all_word[1000];
+static char str_buffer[WORD_LENGH];
+static token all_word[ALL_WORD_SIZE];
 unsigned  int  error_row=0;
 FILE* fp;
 FILE* tp;
@@ -59,7 +60,7 @@ int main(int argc, char* argv[])
       load_buffer();
       while(get_char()!=EOF)
       {
-            printf("lexeme_pointer %d\n",lexeme_pointer);
+          //  printf("lexeme_pointer %d\n",lexeme_pointer);
             token temp_token = nexttoken();
             if(temp_token.id!=0)
             {
@@ -67,6 +68,7 @@ int main(int argc, char* argv[])
             }
 
       }
+      printf("word_count: %d\n",word_count);
       for (i=0;i<word_count;i++)
       {
             printf("%d %s\n",all_word[i].id,all_word[i].attribute);
@@ -106,7 +108,7 @@ void load_buffer()
             printf("error in load buffer\n");
             exit(1);
       }
-      printf("num %d\n",num);
+     // printf("num %d\n",num);
       if(feof(fp)!=0)
       {
             Buffer[num]=EOF;
