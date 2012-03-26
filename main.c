@@ -62,7 +62,7 @@ int main(int argc, char* argv[])
       {
           //  printf("lexeme_pointer %d\n",lexeme_pointer);
             token temp_token = nexttoken();
-            if(temp_token.id!=0)
+            if(temp_token.id!=0)//if zore mean it meet EOF
             {
             all_word[word_count++]=temp_token;
             }
@@ -131,6 +131,7 @@ char nextchar()
             load_buffer(fp);
             lexeme_pointer=0;
       }
+      // str_buffer to store the word hava identified
       str_buffer[word_pointer++]=Buffer[lexeme_pointer++];
       str_buffer[word_pointer]='\0';
       if(str_buffer[word_pointer-1]=='\n')
@@ -143,10 +144,11 @@ void back_word_buffer()
       word_pointer--;
       str_buffer[word_pointer]='\0';
 }
+// id is the identifier buffer_back is a mark wether back a character
 token gettoken(int id,int buffer_back)
 {
       int i;
-      if(buffer_back)
+      if(buffer_back)// judge if should back a character
       {
             word_pointer--;
             str_buffer[word_pointer]='\0';
@@ -182,7 +184,7 @@ token nexttoken()
             c = nextchar();
             if(c==EOF) 
             {
-                  return gettoken(0,1);
+                  return gettoken(0,1);//id =0 mean meet EOF
             }
             else if((c==' ')||(c=='\n')||(c=='\t'))
             {
