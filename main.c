@@ -31,11 +31,12 @@ static unsigned  int  lexeme_pointer=0;
 static unsigned  int  word_pointer=0;
 static char str_buffer[WORD_LENGH];
 static token all_word[ALL_WORD_SIZE];
-unsigned  int  error_row=0;
+unsigned  int  error_row=0;   // count the error row
+unsigned  int  brackets_is_pair=0;// mark ever the brackets is in pair
 FILE* fp;
 FILE* tp;
 
-void fail();
+void fail(int brackets);
 token gettoken(int id,int buffer_back);
 token nexttoken();
 char nextchar();
@@ -66,7 +67,10 @@ int main(int argc, char* argv[])
             {
             all_word[word_count++]=temp_token;
             }
-
+      }
+      if(brackets_is_pair!=0)
+      {
+          fail(1);
       }
       printf("word_count: %d\n",word_count);
       for (i=0;i<word_count;i++)
@@ -165,10 +169,17 @@ token gettoken(int id,int buffer_back)
       str_buffer[word_pointer]='\0';
       return temp_token;
 }
-void  fail()
+void  fail(int brackets)
 {
+      if(brackets)
+      {
+          printf("errors:\n");
+          printf(" '(' or ')' not matched!\n");
+      }
+      else{
       printf("in %d:   ",error_row);
       printf("there is something error around %s\n",str_buffer);
+      }
       exit(1);
 }
 /* token function */
@@ -191,7 +202,10 @@ token nexttoken()
                 back_word_buffer();
                 state=0;
             }
-            else if((c==';')||(c=='=')) state=1;
+            else if(c==';') state=1;
+            else if(c=='(') state=27;
+            else if(c==')') state=28; 
+            else if(c=='=') state=29;
             else if((c=='+') || (c=='-') || (c=='*') ) state=2;
             else if(isdigit(c)) state=3;
             else if(c=='/') state=8;
@@ -320,13 +334,24 @@ token nexttoken()
 
             case 24:
             printf("syntax error:\n");
-            fail();           //error function 
+            fail(0);           //error function 
 
             case 25:
             return gettoken(2,1);
 
             case 26:
             return gettoken(5,1);
+
+            case 27:
+            brackets_is_pair++;
+            return gettoken(8,0);
+
+            case 28:
+            brackets_is_pair--;
+            return gettoken(8,0);
+
+            case 29:
+            return gettoken(9,0);
 
             default: state=24;
 

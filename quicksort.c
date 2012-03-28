@@ -38,6 +38,7 @@ void quick_sort(int s[],int l,int r)
 		j=r;
 		x=s[i];
 		while(i<j)
+			 
 		{
 			while(i<j&&s[j]>x) j--;
 			if(i<j) s[i++]=s[j];
